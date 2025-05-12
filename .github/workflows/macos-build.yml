@@ -1,0 +1,32 @@
+name: MacOS Build for Otomatik İzleme
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Install dependencies
+      run: |
+        pip install pyinstaller easyocr pyautogui pygame pillow pynput
+
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller --onefile --windowed --add-data "ding.mp3:." otomatik_izleme.py
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos-app
+        path: dist/otomatik_izleme
